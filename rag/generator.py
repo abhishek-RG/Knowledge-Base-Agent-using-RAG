@@ -79,11 +79,13 @@ SOURCES: [List all sources used from the documents]
         Args:
             retriever: Retriever instance for getting relevant chunks
         """
-        # Read API key from environment dynamically
-        api_key = os.getenv("GEMINI_API_KEY", GEMINI_API_KEY)
+        # Read API key from config (handles Streamlit Secrets + .env)
+        api_key = GEMINI_API_KEY
         if not api_key:
             raise ValueError(
-                "GEMINI_API_KEY not found. Please set it in config.py or as an environment variable."
+                "GEMINI_API_KEY not found. "
+                "For local: set in .env file. "
+                "For Streamlit Cloud: set in Settings → Secrets."
             )
         
         genai.configure(api_key=api_key)

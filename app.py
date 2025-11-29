@@ -746,7 +746,10 @@ def initialize_session_state():
 
 
 def get_api_key():
-    """Get API key from config (loaded from .env file)."""
+    """
+    Get API key from config.
+    Supports both Streamlit Secrets (Cloud) and .env file (local).
+    """
     from config import GEMINI_API_KEY
     return GEMINI_API_KEY
 
@@ -784,7 +787,19 @@ def process_documents(uploaded_files, progress_bar, status_text):
     
     api_key = get_api_key()
     if not validate_api_key(api_key):
-        st.error("⚠️ GEMINI_API_KEY not found in .env file. Please add it to your .env file.")
+        st.error("""
+        ⚠️ **GEMINI_API_KEY not found!**
+        
+        **For Local Development:**
+        - Create a `.env` file in the project root
+        - Add: `GEMINI_API_KEY=your-api-key-here`
+        
+        **For Streamlit Cloud:**
+        - Go to Settings → Secrets
+        - Add: `GEMINI_API_KEY = "your-api-key-here"`
+        
+        Get your API key from: https://makersuite.google.com/app/apikey
+        """)
         return False
     
     try:
