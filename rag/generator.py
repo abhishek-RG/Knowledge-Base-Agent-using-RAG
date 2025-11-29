@@ -15,7 +15,7 @@ sys.path.insert(0, str(Path(__file__).parent.parent))
 import google.generativeai as genai
 from langchain_core.documents import Document
 
-from config import GEMINI_API_KEY, GEMINI_LLM_MODEL, TEMPERATURE, MAX_TOKENS
+from config import get_gemini_api_key, GEMINI_LLM_MODEL, TEMPERATURE, MAX_TOKENS
 from rag.retriever import Retriever
 
 logger = logging.getLogger(__name__)
@@ -79,13 +79,11 @@ SOURCES: [List all sources used from the documents]
         Args:
             retriever: Retriever instance for getting relevant chunks
         """
-        # Read API key from config (handles Streamlit Secrets + .env)
-        api_key = GEMINI_API_KEY
+        # Read API key with priority: Streamlit secrets > environment variables
+        api_key = get_gemini_api_key()
         if not api_key:
             raise ValueError(
-                "GEMINI_API_KEY not found. "
-                "For local: set in .env file. "
-                "For Streamlit Cloud: set in Settings → Secrets."
+                "GEMINI_API_KEY not found. Please set it in Streamlit secrets, .env file, or as an environment variable."
             )
         
         genai.configure(api_key=api_key)

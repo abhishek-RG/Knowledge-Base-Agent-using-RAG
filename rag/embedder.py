@@ -26,7 +26,7 @@ from langchain_google_genai import GoogleGenerativeAIEmbeddings
 sys.path.insert(0, str(Path(__file__).parent.parent))
 
 from config import (
-    GEMINI_API_KEY,
+    get_gemini_api_key,
     GEMINI_EMBEDDING_MODEL,
     VECTORSTORE_DIR,
     VECTORSTORE_INDEX_PATH,
@@ -41,13 +41,11 @@ class Embedder:
     
     def __init__(self):
         """Initialize the embedder with Gemini embeddings."""
-        # Read API key from config (handles Streamlit Secrets + .env)
-        api_key = GEMINI_API_KEY
+        # Read API key with priority: Streamlit secrets > environment variables
+        api_key = get_gemini_api_key()
         if not api_key:
             raise ValueError(
-                "GEMINI_API_KEY not found. "
-                "For local: set in .env file. "
-                "For Streamlit Cloud: set in Settings → Secrets."
+                "GEMINI_API_KEY not found. Please set it in Streamlit secrets, .env file, or as an environment variable."
             )
         
         # Initialize embeddings - model is required

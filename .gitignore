@@ -22,30 +22,15 @@ data/*
 vectorstore/*
 !vectorstore/.gitkeep
 
-# Environment variables and secrets
+# Environment variables
 .env
 .env.local
-.env.*
-*.env
-.envrc
 
-# Streamlit secrets (local development)
+# Streamlit secrets (local development - contains actual keys)
 .streamlit/secrets.toml
-secrets.toml
 
-# API Keys and secrets
-# Never commit these files
-config.local.py
-*_secret*
-*_key*
-*.key
-
-# Backup files that might contain secrets
-*.bak
-*.backup
-*~
-*.swp
-*.swo
+# API Keys (if stored in config)
+# config.py  # Uncomment if you want to ignore config.py
 
 # OS
 .DS_Store
