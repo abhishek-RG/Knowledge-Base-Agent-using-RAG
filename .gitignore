@@ -1,0 +1,38 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+venv/
+env/
+ENV/
+.venv
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Project specific
+data/*
+!data/.gitkeep
+vectorstore/*
+!vectorstore/.gitkeep
+
+# Environment variables
+.env
+.env.local
+
+# API Keys (if stored in config)
+# config.py  # Uncomment if you want to ignore config.py
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+
