@@ -2,6 +2,10 @@
 
 A production-ready **Knowledge Base AI Agent** with both Streamlit and FastAPI/Next.js implementations. This application allows you to upload documents (PDF, DOCX, DOC, TXT), build a searchable knowledge base, and ask questions using an advanced RAG (Retrieval Augmented Generation) pipeline with intelligent keyword matching and confidence scoring.
 
+DEMO LINK OF THE VIDEO :- https://drive.google.com/file/d/1d0urVbzKfpDphgdJvDF55qSIoQrLoVHR/view?usp=sharing watch a demo video to understand the simple workflow of the DEPLOYED WEBAPP using Streamlit cloud
+
+ALSO CHECK OUT THE WEBAPP BY CLICKING ON THIS LINK:-https://abhishek-rg-knowledge-base-agent-using-rag-app-xy3dyq.streamlit.app/
+
 ## ✨ Key Features
 
 ### Core Capabilities
