@@ -1,6 +1,6 @@
 # 📚 Knowledge Base AI Agent
 
-A production-ready **Knowledge Base AI Agent** built with **Streamlit**, **LangChain**, **Google Gemini API**, and **FAISS**. This application allows you to upload documents (PDF, DOCX, DOC, TXT), build a searchable knowledge base, and ask questions using an advanced RAG (Retrieval Augmented Generation) pipeline with intelligent keyword matching and confidence scoring.
+A production-ready **Knowledge Base AI Agent** with both Streamlit and FastAPI/Next.js implementations. This application allows you to upload documents (PDF, DOCX, DOC, TXT), build a searchable knowledge base, and ask questions using an advanced RAG (Retrieval Augmented Generation) pipeline with intelligent keyword matching and confidence scoring.
 
 ## ✨ Key Features
 
@@ -11,239 +11,213 @@ A production-ready **Knowledge Base AI Agent** built with **Streamlit**, **LangC
 - 📊 **Source Citations**: See exactly which documents and chunks were used for each answer
 - 🎯 **Confidence Scores**: Get confidence scores based on retrieval similarity and keyword matching
 - 💾 **Persistent Storage**: FAISS index persists across sessions
-- 🎨 **Modern UI**: Professional, deployable Streamlit interface with always-visible sidebar
+- 🎨 **Modern UI**: Professional interfaces available in both Streamlit and Next.js
 
 ### Advanced Features
 - 🚫 **No Hallucination**: Answers are generated strictly from uploaded documents only
 - 📝 **Complete Responses**: Comprehensive answers extracted directly from documents in point-wise format
 - ✅ **Accurate Retrieval**: Enhanced retrieval with keyword extraction and hybrid scoring
-- 📚 **File Management**: Sidebar database showing all uploaded files with delete functionality
+- 📚 **File Management**: Database showing all uploaded files with delete functionality
 - 🔄 **Seamless Chat**: Continuous chat interface that understands context and retrieves from knowledge base
 - 🎓 **Explain Like I'm 10**: Toggle to simplify complex answers for easier understanding
 
 ## 🏗️ Architecture
 
+### Streamlit Version (Simple)
 ```
-┌─────────────────────────────────────────────────────────────┐
-│              Streamlit UI (app.py)                          │
-│  • Always-visible sidebar with file uploader               │
-│  • File database with delete functionality                 │
-│  • Chat interface with confidence scores                   │
-└───────────────────────┬─────────────────────────────────────┘
-                        │
-        ┌───────────────┴───────────────┐
-        │                               │
-┌───────▼────────┐            ┌────────▼────────┐
-│ Document       │            │   RAG Pipeline  │
-│ Loader         │            │                 │
-│                │            │  ┌───────────┐  │
-│ • PDF          │            │  │ Embedder  │  │
-│ • DOCX         │───────────▶│  │ (Gemini)  │  │
-│ • DOC          │            │  └─────┬─────┘  │
-│ • TXT          │            │        │        │
-└────────────────┘            │  ┌─────▼─────┐  │
-                              │  │  FAISS    │  │
-                              │  │ Vector DB │  │
-                              │  └─────┬─────┘  │
-                              │        │        │
-                              │  ┌─────▼─────┐  │
-                              │  │ Retriever │  │
-                              │  │ Enhanced  │  │
-                              │  │ • Keyword │  │
-                              │  │ • Hybrid  │  │
-                              │  │   Scoring │  │
-                              │  └─────┬─────┘  │
-                              │        │        │
-                              │  ┌─────▼─────┐  │
-                              │  │ Generator │  │
-                              │  │ (Gemini)  │  │
-                              │  │ + Context │  │
-                              │  │   Analysis│  │
-                              │  └───────────┘  │
-                              └─────────────────┘
+Streamlit UI (app.py)
+    ↓
+Document Loader → Text Splitter → Embedder (Gemini)
+    ↓
+FAISS Vector Store (Local)
+    ↓
+Retriever → Generator (Gemini) → Answers
+```
+
+### Production Version (FastAPI + Next.js)
+```
+Next.js Frontend
+    ↓
+FastAPI Backend
+    ↓
+AWS S3 (Documents) + MongoDB (Metadata)
+    ↓
+FAISS Vector Store
+    ↓
+Google Gemini API
 ```
 
 ## 🛠️ Tech Stack
 
+### Streamlit Version
 - **Streamlit** (>=1.28.0): Web UI framework
 - **LangChain** (>=0.1.0): Document processing and chain orchestration
-- **LangChain Community** (>=0.0.20): Community integrations
-- **LangChain Google GenAI** (>=2.0.0): Google Gemini integration
-- **Google Gemini API**:
-  - `models/embedding-001` for embeddings
-  - `gemini-1.5-flash-latest` (or latest available) for answer generation
+- **Google Gemini API**: Embeddings and answer generation
 - **FAISS** (>=1.7.4): Vector similarity search
 - **Python 3.8+**: Core language
-- **Additional Libraries**: pypdf, python-docx, tiktoken, python-dotenv
 
-## 📦 Installation & Local Setup
+### Production Version
+- **Backend**: FastAPI, LangChain, FAISS, MongoDB, AWS S3
+- **Frontend**: Next.js 14, TypeScript, TailwindCSS
+- **Infrastructure**: Docker, Nginx, AWS EC2
+
+## 📦 Installation & Setup
 
 ### Prerequisites
 
 - **Python 3.8 or higher** (Python 3.9+ recommended)
 - **Google Gemini API Key** ([Get one here](https://makersuite.google.com/app/apikey))
 - **pip** (Python package manager)
+- **Node.js 18+** (for production version)
+- **Docker & Docker Compose** (optional, for containerized deployment)
 
-### Step-by-Step Local Setup
+### Streamlit Version - Quick Start
 
 #### 1. Clone or Download the Project
 
 ```bash
-# If using git
-git clone <repository-url>
 cd kb_agent
-
-# Or navigate to the project directory if already downloaded
-cd path/to/kb_agent
 ```
 
-#### 2. Create a Virtual Environment (Highly Recommended)
+#### 2. Create a Virtual Environment
 
 **Windows (PowerShell):**
 ```powershell
-# Create virtual environment
 python -m venv venv
-
-# Activate virtual environment
 .\venv\Scripts\Activate.ps1
-
-# If you get an execution policy error, run:
-Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope CurrentUser
-```
-
-**Windows (Command Prompt):**
-```cmd
-python -m venv venv
-venv\Scripts\activate
 ```
 
 **macOS/Linux:**
 ```bash
-# Create virtual environment
 python3 -m venv venv
-
-# Activate virtual environment
 source venv/bin/activate
 ```
 
 #### 3. Install Dependencies
 
 ```bash
-# Make sure virtual environment is activated (you should see (venv) in your terminal)
 pip install --upgrade pip
 pip install -r requirements.txt
 ```
 
 #### 4. Configure Google Gemini API Key
 
-You have **three options** to set your API key:
-
 **Option 1: Using .env file (Recommended)**
-
-1. Create a `.env` file in the project root directory (`kb_agent/.env`)
+1. Create a `.env` file in the project root directory
 2. Add your API key:
    ```
    GEMINI_API_KEY=your-api-key-here
    ```
-3. The application will automatically load it using `python-dotenv`
 
 **Option 2: Environment Variable**
-
-**Windows (PowerShell):**
 ```powershell
+# Windows PowerShell
 $env:GEMINI_API_KEY="your-api-key-here"
-```
 
-**Windows (Command Prompt):**
-```cmd
-set GEMINI_API_KEY=your-api-key-here
-```
-
-**macOS/Linux:**
-```bash
+# macOS/Linux
 export GEMINI_API_KEY="your-api-key-here"
 ```
 
-**Option 3: Direct in config.py (Not Recommended for Production)**
+**Option 3: Streamlit Secrets (for Streamlit Cloud)**
+1. Create `.streamlit/secrets.toml`:
+   ```toml
+   GEMINI_API_KEY = "your-api-key-here"
+   ```
+2. Or add secrets in Streamlit Cloud dashboard
 
-Edit `config.py` and set:
-```python
-GEMINI_API_KEY = "your-api-key-here"
-```
-
-> **⚠️ Important**: Never commit your API key to version control. Use `.env` file and add it to `.gitignore`.
-
-#### 5. Verify Installation
+#### 5. Run the Application
 
 ```bash
-# Check if all packages are installed
-pip list | grep -E "streamlit|langchain|faiss|google-generativeai"
-
-# Or simply try importing
-python -c "import streamlit; import langchain; print('All packages installed successfully!')"
-```
-
-## 🚀 Running the Application Locally
-
-### Start the Application
-
-```bash
-# Make sure virtual environment is activated
 streamlit run app.py
 ```
 
-The application will:
-1. Start a local Streamlit server
-2. Open automatically in your default web browser at `http://localhost:8501`
-3. If it doesn't open automatically, navigate to the URL shown in the terminal
+The application will open at `http://localhost:8501`
 
-### First-Time Usage
+### Production Version - Quick Start
 
-1. **Welcome Screen**: You'll see a welcome page with instructions and features
-2. **Upload Documents**: 
-   - Use the sidebar (always visible) to browse and upload files
-   - Supported formats: PDF, DOCX, DOC, TXT
-   - Files are automatically processed when uploaded
-3. **Wait for Processing**: 
-   - Progress bar shows processing status
-   - Documents are chunked, embedded, and indexed
-4. **Start Asking Questions**: 
-   - Once processing completes, the chat interface appears
-   - Type your question and get answers from your documents
-   - Each answer includes a confidence score
+#### 1. Backend Setup
+
+```bash
+cd backend
+python -m venv venv
+source venv/bin/activate  # Windows: venv\Scripts\activate
+pip install -r requirements.txt
+cp .env.example .env
+# Edit .env with your credentials
+uvicorn app:app --reload
+```
+
+#### 2. Frontend Setup
+
+```bash
+cd frontend
+npm install
+cp .env.example .env
+# Edit .env: NEXT_PUBLIC_API_URL=http://localhost:8000
+npm run dev
+```
+
+#### 3. Access Application
+
+- Frontend: http://localhost:3000
+- Backend API: http://localhost:8000
+- API Docs: http://localhost:8000/docs
+
+### Docker Deployment
+
+```bash
+# Build and start
+docker-compose up -d
+
+# View logs
+docker-compose logs -f
+
+# Stop
+docker-compose down
+```
 
 ## 📁 Project Structure
 
 ```
 kb_agent/
-│
-├── app.py                      # Main Streamlit application
-├── config.py                   # Configuration settings (API keys, paths, etc.)
+├── app.py                      # Streamlit application (root)
+├── config.py                   # Configuration settings
 ├── requirements.txt            # Python dependencies
 ├── README.md                   # This file
-├── .env                        # Environment variables (create this, not in repo)
 │
-├── data/                       # Uploaded documents (auto-created)
-│   └── *.pdf, *.docx, etc.    # Your uploaded files
+├── backend/                    # FastAPI backend (production)
+│   ├── app.py                 # FastAPI application
+│   ├── api/                   # API routes
+│   ├── core/                  # Configuration
+│   ├── rag/                   # RAG pipeline
+│   ├── services/              # External services (S3, MongoDB)
+│   └── models/               # Pydantic models
 │
-├── vectorstore/                # FAISS index storage (auto-created)
-│   ├── index.faiss            # FAISS vector index
-│   └── index.pkl              # Metadata pickle file
+├── frontend/                  # Next.js frontend (production)
+│   ├── app/                  # Next.js pages
+│   ├── components/           # React components
+│   └── lib/                  # Utilities
 │
-├── loaders/
-│   └── document_loader.py      # Document loading utilities (PDF, DOCX, TXT)
+├── loaders/                   # Document loaders
+│   └── document_loader.py
 │
-├── rag/
-│   ├── embedder.py            # Embedding generation & FAISS storage
-│   ├── retriever.py          # Enhanced vector search with keyword matching
-│   └── generator.py          # RAG pipeline & answer generation with confidence
+├── rag/                       # RAG components (Streamlit version)
+│   ├── embedder.py           # Embedding generation
+│   ├── retriever.py          # Vector search
+│   └── generator.py          # Answer generation
 │
-└── utils/
-    ├── text_splitter.py       # Text chunking utilities
-    └── helpers.py             # Helper functions (file management, etc.)
+├── utils/                     # Helper utilities
+│   ├── text_splitter.py
+│   └── helpers.py
+│
+├── data/                      # Uploaded documents (auto-created)
+├── vectorstore/               # FAISS index storage (auto-created)
+└── .streamlit/                # Streamlit configuration
 ```
 
 ## ⚙️ Configuration
+
+### Streamlit Version
 
 Edit `config.py` to customize settings:
 
@@ -253,15 +227,23 @@ CHUNK_SIZE = 1000          # Characters per chunk
 CHUNK_OVERLAP = 200        # Overlap between chunks
 
 # Retrieval Configuration
-TOP_K_CHUNKS = 5           # Number of chunks to retrieve (increased for better context)
+TOP_K_CHUNKS = 5           # Number of chunks to retrieve
 
 # RAG Configuration
 TEMPERATURE = 0.7          # LLM creativity (0.0-1.0)
 MAX_TOKENS = 1000          # Maximum response length
+```
 
-# API Configuration
-GEMINI_EMBEDDING_MODEL = "models/embedding-001"
-GEMINI_LLM_MODEL = None    # None = auto-detect latest model
+### Production Version
+
+Edit `backend/core/config.py` or set environment variables in `backend/.env`:
+
+```env
+GEMINI_API_KEY=your-key
+AWS_ACCESS_KEY_ID=your-aws-key
+AWS_SECRET_ACCESS_KEY=your-aws-secret
+S3_BUCKET_NAME=your-bucket
+MONGODB_URI=mongodb+srv://...
 ```
 
 ## 🔧 How It Works
@@ -297,61 +279,122 @@ GEMINI_LLM_MODEL = None    # None = auto-detect latest model
 - LLM generates point-wise answer with source citations
 - Confidence score displayed with color coding (green/yellow/red)
 
-## 🆕 Recent Updates & Improvements
+## 🚀 Deployment
 
-### Version 2.0 - Enhanced Retrieval & UI
+### Streamlit Cloud
 
-#### UI/UX Improvements
-- ✅ **Always-visible Sidebar**: Sidebar stays open for easy file management
-- ✅ **File Database**: View all uploaded files with size and delete option
-- ✅ **Modern Professional UI**: Clean, deployable interface with dark theme
-- ✅ **Welcome Page**: Clear instructions and feature showcase
-- ✅ **Seamless Chat**: Continuous chat interface below file upload
+1. Push code to GitHub
+2. Go to [Streamlit Cloud](https://share.streamlit.io/)
+3. Connect your repository
+4. Add secrets in Settings → Secrets:
+   ```toml
+   GEMINI_API_KEY = "your-actual-api-key-here"
+   ```
+5. Deploy!
 
-#### Retrieval Enhancements
-- ✅ **Keyword Extraction**: Automatically extracts important keywords from queries
-- ✅ **Query Expansion**: Expands queries with relevant keywords for better matching
-- ✅ **Hybrid Scoring**: Combines semantic similarity (70%) with keyword matching (30%)
-- ✅ **Improved Context**: Increased TOP_K from 3 to 5 chunks for better understanding
-- ✅ **Smart Filtering**: Retrieves more candidates, filters to best matches
+### Production Deployment (AWS EC2)
 
-#### Confidence Scoring
-- ✅ **Multi-factor Confidence**: Calculates confidence using 4 factors
-- ✅ **Visual Indicators**: Color-coded confidence scores (green/yellow/red)
-- ✅ **Accuracy Metrics**: Better representation of retrieval quality
+1. **Launch EC2 Instance**
+   - OS: Ubuntu 22.04 LTS
+   - Instance Type: t3.medium or larger
+   - Security Group: Open ports 22, 80, 443, 8000, 3000
 
-#### Document-Only Responses
-- ✅ **Strict Prompting**: Enhanced prompts ensure answers only from uploaded documents
-- ✅ **No Hallucination**: Explicit instructions prevent external knowledge usage
-- ✅ **Context Analysis**: Step-by-step context understanding in prompts
+2. **Install Docker & Docker Compose**
+   ```bash
+   curl -fsSL https://get.docker.com -o get-docker.sh
+   sudo sh get-docker.sh
+   sudo curl -L "https://github.com/docker/compose/releases/latest/download/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
+   sudo chmod +x /usr/local/bin/docker-compose
+   ```
 
-#### Bug Fixes
-- ✅ **Loop Prevention**: Fixed infinite processing loop on file upload
-- ✅ **File Uploader Reset**: Automatic reset after successful processing
-- ✅ **State Management**: Improved session state handling
+3. **Deploy Application**
+   ```bash
+   git clone <your-repository-url> kb_agent
+   cd kb_agent
+   # Configure .env files
+   docker-compose up -d
+   ```
 
-## 🧪 Testing
+4. **Set Up Nginx & SSL**
+   ```bash
+   sudo apt install nginx certbot python3-certbot-nginx -y
+   sudo certbot --nginx -d your-domain.com
+   ```
 
-The application includes comprehensive error handling for:
-- Empty or invalid questions
-- Missing or corrupted documents
-- API key validation and errors
-- Document ingestion failures
-- Vector retrieval failures
-- Network connectivity issues
+5. **Configure Nginx**
+   - Copy `nginx/nginx.conf` to `/etc/nginx/sites-available/kb_rag`
+   - Update domain name in config
+   - Enable site and reload nginx
+
+### AWS S3 Setup
+
+1. Create S3 bucket for document storage
+2. Create IAM user with S3 access
+3. Add credentials to `backend/.env`:
+   ```env
+   AWS_ACCESS_KEY_ID=your-key
+   AWS_SECRET_ACCESS_KEY=your-secret
+   S3_BUCKET_NAME=your-bucket
+   AWS_REGION=us-east-1
+   ```
+
+### MongoDB Atlas Setup
+
+1. Create MongoDB Atlas cluster
+2. Create database user
+3. Whitelist EC2 IP address
+4. Get connection string and add to `backend/.env`:
+   ```env
+   MONGODB_URI=mongodb+srv://username:password@cluster.mongodb.net/kb_rag
+   ```
+
+## 📡 API Endpoints (Production Version)
+
+### Health Check
+```
+GET /api/health/
+```
+
+### Upload File
+```
+POST /api/upload/
+Content-Type: multipart/form-data
+Body: file
+```
+
+### Query Knowledge Base
+```
+POST /api/query/
+Content-Type: application/json
+Body: {
+  "question": "Your question",
+  "explain_like_10": false,
+  "top_k": 5
+}
+```
+
+### List Files
+```
+GET /api/files/?skip=0&limit=100
+```
+
+### Delete File
+```
+DELETE /api/files/{file_id}
+```
 
 ## 🐛 Troubleshooting
 
 ### "GEMINI_API_KEY not found"
 **Solution:**
-1. Check that you've set the API key using one of the three methods above
+1. Check that you've set the API key using one of the methods above
 2. If using `.env` file, ensure it's in the project root directory
-3. Restart the Streamlit application after setting the key
+3. Restart the application after setting the key
 4. Verify the key is correct by checking [Google AI Studio](https://makersuite.google.com/app/apikey)
 
 ### "Vector store not found"
 **Solution:**
-1. Upload and process documents first using the sidebar file uploader
+1. Upload and process documents first
 2. Check that `vectorstore/` directory exists and has `index.faiss` and `index.pkl` files
 3. If files are corrupted, delete `vectorstore/` directory and re-upload documents
 
@@ -360,27 +403,26 @@ The application includes comprehensive error handling for:
 1. Ensure virtual environment is activated
 2. Reinstall dependencies: `pip install -r requirements.txt --upgrade`
 3. Check Python version: `python --version` (should be 3.8+)
-4. Try installing packages individually if specific imports fail
 
 ### Document Loading Fails
 **Solution:**
 1. Verify file format is supported (PDF, DOCX, DOC, TXT)
 2. Check file is not corrupted or password-protected
 3. Ensure file size is reasonable (< 200MB per file)
-4. Try converting PDF to a different format if issues persist
 
-### Application Runs in Loop
+### Network Errors (Production Backend)
 **Solution:**
-1. This was fixed in recent updates
-2. If you experience this, clear browser cache and restart the app
-3. Check that you're using the latest version of the code
+1. Use `127.0.0.1` instead of `0.0.0.0` on Windows
+2. Check port is not already in use: `netstat -ano | findstr :8000`
+3. Verify CORS settings in `backend/core/config.py`
+4. Update frontend `.env` with correct API URL
 
-### Low Confidence Scores
+### Upload Errors
 **Solution:**
-1. Ensure documents contain relevant information to your questions
-2. Try rephrasing questions with more specific keywords
-3. Upload more relevant documents to the knowledge base
-4. Check that documents were processed successfully
+1. Ensure backend is running
+2. Check `backend/uploads` directory exists
+3. Verify file size limits
+4. Check backend logs for detailed errors
 
 ## 📝 API Key Information
 
@@ -415,19 +457,26 @@ The application includes comprehensive error handling for:
 - **Knowledge Base**: Build a searchable knowledge base from your documents
 - **Content Analysis**: Analyze and summarize document content
 
-## 📝 Future Improvements
+## 🔄 Migration from Streamlit to Production
 
-- [ ] Multi-user support with authentication
-- [ ] Cloud storage integration (Supabase, AWS S3)
-- [ ] Advanced analytics dashboard
-- [ ] Support for more file formats (Markdown, HTML, CSV)
-- [ ] Conversation history persistence
-- [ ] Export chat conversations (JSON, PDF)
-- [ ] Docker deployment configuration
-- [ ] Batch document processing
-- [ ] Advanced filtering and search options
-- [ ] Custom embedding models
-- [ ] Multi-language support
+If you're migrating from the Streamlit version to the production stack:
+
+1. **Export Existing Documents**: Copy files from `data/` directory
+2. **Upload to S3**: Use the new upload interface or AWS CLI
+3. **Rebuild Vectorstore**: Upload documents through new system to rebuild
+4. **Update Configuration**: Copy API keys and settings to `backend/.env`
+5. **Test Thoroughly**: Verify all features work before switching
+
+## 📈 Performance & Scaling
+
+- Vector search optimized with FAISS
+- Async FastAPI endpoints for better performance
+- React Query for frontend caching
+- Nginx reverse proxy for load balancing
+- Docker containerization for easy scaling
+- Horizontal scaling: Use load balancer with multiple EC2 instances
+- Database: Upgrade MongoDB Atlas tier for production
+- Caching: Add Redis for session/query caching
 
 ## 📄 License
 
@@ -446,29 +495,6 @@ For issues or questions:
 
 ---
 
-## 🚀 Quick Start Summary
-
-```bash
-# 1. Navigate to project
-cd kb_agent
-
-# 2. Create and activate virtual environment
-python -m venv venv
-# Windows: venv\Scripts\activate
-# macOS/Linux: source venv/bin/activate
-
-# 3. Install dependencies
-pip install -r requirements.txt
-
-# 4. Set API key (create .env file)
-echo "GEMINI_API_KEY=your-key-here" > .env
-
-# 5. Run application
-streamlit run app.py
-```
-
-**Built with ❤️ using Streamlit, LangChain, Google Gemini, and FAISS**
-
----
+**Built with ❤️ using Streamlit, FastAPI, Next.js, LangChain, Google Gemini, FAISS, and AWS**
 
 *Last Updated: 2024 - Version 2.0*

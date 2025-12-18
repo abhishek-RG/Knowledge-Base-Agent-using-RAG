@@ -8,6 +8,14 @@ venv/
 env/
 ENV/
 .venv
+*.egg-info/
+dist/
+build/
+
+# Environment
+.env
+.env.local
+.env.*.local
 
 # IDE
 .vscode/
@@ -16,26 +24,32 @@ ENV/
 *.swo
 *~
 
-# Project specific
-data/*
-!data/.gitkeep
-vectorstore/*
-!vectorstore/.gitkeep
+# Data
+data/
+vectorstore/
+uploads/
+*.faiss
+*.pkl
 
-# Environment variables
-.env
-.env.local
+# Logs
+*.log
+logs/
 
-# Streamlit secrets (local development - contains actual keys)
-.streamlit/secrets.toml
-
-# API Keys (if stored in config)
-# config.py  # Uncomment if you want to ignore config.py
+# Node
+node_modules/
+.next/
+out/
+.nuxt/
+.cache/
 
 # OS
 .DS_Store
 Thumbs.db
 
-# Logs
-*.log
+# Docker
+.dockerignore
 
+# Temporary
+*.tmp
+*.temp
+*.bak
